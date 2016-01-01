@@ -1,4 +1,4 @@
-By Sam Brown ([@_samdb_](https://twitter.com/_samdb_))
+By Sam Brown ([@\\_samdb_](https://twitter.com/_samdb_))
 
 All the code for this post can be found at: [https://github.com/sam-b/z3-stuff/hackvent-15](https://github.com/sam-b/z3-stuff/hackvent-15)
 
@@ -235,5 +235,5 @@ else:
 
 Finally I ran the code (15.py in the git repo) and it printed out the solution as expected!
 
-![](http://github.com/sam-b/z3-stuff/hackvent15/solution.PNG)
+![](https://raw.githubusercontent.com/sam-b/z3-stuff/master/hackvent-15/solution.PNG)
 
