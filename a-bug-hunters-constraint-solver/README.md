@@ -2,7 +2,7 @@ By Sam Brown ([@\_samdb_](https://twitter.com/_samdb_))
 
 All the code for this post can be found at: [https://github.com/sam-b/z3-stuff/tree/master/a-bug-hunters-constraint-solver](https://github.com/sam-b/z3-stuff/tree/master/a-bug-hunters-constraint-solver)
 
-While reading [A Bug Hunters Diary](https://www.nostarch.com/bughunter) the other day I came across a problem the author had in chapter 7 (investigating an XNU kernel bug), the author could control some data which was then used as the address passed to a call instruction. The data went through some basic transforms before it was used as an address, so in order to get it to be an address which the author/attacker controlled they wrote a simple script which brute forced the value they should place in that location as shown below.
+While reading [A Bug Hunters Diary](https://www.nostarch.com/bughunter) the other day I came across a problem the author had in chapter 7 (investigating an XNU kernel bug). The author could control some data which was then used as the address passed to a call instruction. The data went through some basic transforms before it was used as an address, so in order to get it to be an address which the author/attacker controlled they wrote a simple script which brute forced the value they should place in that location as shown below.
 
 <pre>
 #include &lt;stdio.h>
@@ -28,9 +28,9 @@ int main(void) {
 }
 </pre>
 
-This seemed like a perfect opportunity to make use of an SMT solver (see: [https://doar-e.github.io/presentations/securityday2015/SecDay-Lille-2015-Axel-0vercl0k-Souchet.html#/](https://doar-e.github.io/presentations/securityday2015/SecDay-Lille-2015-Axel-0vercl0k-Souchet.html#/) for what is the best intro I've found), SMT solvers allow us to express 'symbolic' variables and constraints on their values. Then if its possible to find any values which satisfy the constraints, it allows us to access a model which includes possible values which satisfy them. While this particular problem is a trivial example, it is a nice short and simple opportunity to illustrate how to make use of a pretty opaque tool. 
+This seemed like a perfect opportunity to make use of an SMT solver (see: [https://doar-e.github.io/presentations/securityday2015/SecDay-Lille-2015-Axel-0vercl0k-Souchet.html#/](https://doar-e.github.io/presentations/securityday2015/SecDay-Lille-2015-Axel-0vercl0k-Souchet.html#/) for the best intro I've found), SMT solvers allow us to express 'symbolic' variables and constraints on their values. Then if its possible to find any values which satisfy the constraints, it allows us to access a model which includes possible values which satisfy them. While this particular problem is a trivial example, it is a nice short and simple opportunity to illustrate how to make use of a pretty opaque tool. 
 
-In this case I chose to use the [Z3](https://github.com/Z3Prover/z3) constraint solver/SAT solver from Microsoft, which is open source and has great python bindings. First of we need to import z3 and read in the target value from the command line:
+In this case I chose to use the [Z3](https://github.com/Z3Prover/z3) constraint solver/SAT solver from Microsoft, which is open source and has great python bindings. First of we need to import Z3 and read in the target value from the command line:
 
 <pre>
 from z3 import *
@@ -40,13 +40,13 @@ if __name__ == "__main__":
 	target = int(sys.argv[1],16)
 </pre>
 
-Next we need to declare a symbolic variable which is equivalent to 'a' in the earlier code, this will be the value which when transformed matches the target value.
+Next we need to declare a symbolic variable which is equivalent to the 'a' variable in the earlier code, this will be the value which once transformed matches the target value.
 
 <pre>
 	x = BitVec('x', 32)
 </pre>
 
-Now we create a Z3 solver object and add the constraints we know to it, that the value should be between 0x80000000 and 0xffffffff and that when left shifted by 5 with 0x456860 added to it should equal the target value.
+Now we create a Z3 solver object and add the constraints we know to it, that the value should be between 0x80000000 and 0xffffffff and that when left shifted by 5 with 0x456860 added to it, it should equal the target value.
 
 <pre>
 	s = Solver()
