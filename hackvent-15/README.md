@@ -1,4 +1,4 @@
-By Sam Brown ([@\\_samdb_](https://twitter.com/_samdb_))
+By Sam Brown ([@\_samdb_](https://twitter.com/_samdb_))
 
 All the code for this post can be found at: [https://github.com/sam-b/z3-stuff/hackvent-15](https://github.com/sam-b/z3-stuff/hackvent-15)
 
