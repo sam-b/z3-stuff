@@ -4,14 +4,11 @@ import sys
 def solve(puzzle):
 	grid = [Int(str(i)) for i in range(81)]
 	s = Solver()
-
 	for i in range(len(puzzle)):
 		if puzzle[i] != ' ':
 			s.add(grid[i] == int(puzzle[i]))
-
 	for i in grid:
 		s.add(i >0, i <10)
-
 	for i in range(9):
 		across = []
 		down = []
@@ -43,7 +40,18 @@ def draw(grid):
 			out += str(tmp[(9*i)+j]) + "|"
 		print out
 
-if __name__ == "__main__":	
+def draw_puzzle(puzzle):
+	for i in range(9):
+		out = "|"
+		for j in range(9):
+			out += str(puzzle[(9*i)+j]) + "|"
+		print out
+
+if __name__ == "__main__":
 	puzzle = "  86      6 5  1   79  4    43    6   69 17   9    24    8  43   2  3 7      95  "
+	draw_puzzle(puzzle)
+	print ""
+	print "-" * 30
+	print ""
 	solution = solve(puzzle)
 	draw(solution)
