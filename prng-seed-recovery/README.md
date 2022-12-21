@@ -1,10 +1,10 @@
 I've been playing with Z3 a fair bit recently (bug hunters, hackvent15) and decided to do soemthing atleast semi-useful if not still pretty simple with it. Its common knowledge that the default random number generators provided by msot languages aren't cryptographically secure and most can there future or past state calculated purely by acquiring a few outputs so I decided to try using Z3 to recover the seeds for a few of them. I started off looking at Java's util.random which is a simple Linear Congruential Generator (wikipedia link) and then I moved onto PHPs Mersienne Twister based RNG since this is more complex.
 
-###Java util.random
+### Java util.random
 
 First off I needed a simple Java program to print out a bunch of random numbers with a known seed for testing - 
 
-<pre>
+```
 import java.util.Random;
 
 public class Rand {
@@ -17,15 +17,15 @@ public class Rand {
 		}
 	}
 }
-</pre>
+```
 
 This code just initialises the RNG with a seed of '0x1337' and then prints out the first five 64 bit random numbers it generates as shown:
 
-~~~image~~~
+![Java rand example](java_rand_print.PNG)
 
 Now since I wanted to use the python z3 bindings I needed to replicate Random() in python - this turned out to be simple as the source of Random() was publically available (http://developer.classpath.org/doc/java/util/Random-source.html), this gave me the following python implementation:
 
-<pre>
+```
 import sys
 
 class Rand:
@@ -57,19 +57,19 @@ if __name__ == "__main__":
 	for i in range(5):
 		rand = Rand(0x1337)
 		print rand.output_long(i)
-</pre>
+```
 
 Here the __init__, next and next_long functions are straght foward re-implemtations of the same functions from the link before, the output_long() function was added so that the ith random value could be retrieved easily. Running this code it can be seen to give the same output as the java:
 
-~~~image~~~
+
+Image long lost.
 
 
-
-###PHP mt_rand()
+### PHP mt_rand()
 
 Once I moved onto php, I again needed a simple sample script that printed out random numbers from the generator:
 
-<pre>
+```
 <?php
 	mt_srand(0x1337);
 	for($i = 0; $i < 5; $i++){
@@ -77,7 +77,7 @@ Once I moved onto php, I again needed a simple sample script that printed out ra
 		echo "\n";
 	}
 ?>
-</pre>
+```
 
 Note that the 'mt\_' functions are being used - PHP's standard rand() function also uses an LCG like Java's. The 'mt_rand()' function instead uses a Mersienne Twister based generator which has a much longer period.
 
@@ -85,7 +85,7 @@ The code can be seen running below -
 
 Now once again I needed to re-implement the RNG in python, luckily this had already been done in the 'snowflake' project. Snowflake is a framework for exploiting randomness issues in PHP applications which includes the ability to bruteforce the seed used in either mt_rand or normal rand. The re-implemented class can be found at [https://github.com/GeorgeArgyros/Snowflake/blob/master/snowflake.py](https://github.com/GeorgeArgyros/Snowflake/blob/master/snowflake.py)
 
-<pre>
+```
 import sys
 
 bitMask = 0xffffffff
@@ -202,9 +202,9 @@ def get_val(seed,num):
 if __name__ == "__main__":
 	for i in range(5):
 		print get_val(0x1337,i)
-</pre>
+```
 
 Once again the 'get_val' function has been added to make getting ith random numbers easier. When ran we can see that this code gives us the same output as the PHP so we can reasonably sure its correct:
 
-~~~image~~~
+Image long lost
 
